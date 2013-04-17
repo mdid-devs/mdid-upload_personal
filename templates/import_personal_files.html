@@ -1,0 +1,161 @@
+{% extends "master.html" %}
+{% load access_control %}
+{% load ui %}
+{% load viewers %}
+{% load data %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+function update_form_parameters(control) {
+
+	control.swfupload('removePostParam', '{{ upload_form.collection.name }}');
+	control.swfupload('removePostParam', '{{ upload_form.storage.name }}');
+	control.swfupload('removePostParam', '{{ upload_form.create_records.name }}');
+	control.swfupload('removePostParam', '{{ upload_form.personal_records.name }}');
+	control.swfupload('removePostParam', '{{ upload_form.replace_files.name }}');
+	control.swfupload('removePostParam', '{{ upload_form.multiple_files.name }}');
+	control.swfupload('addPostParam', '{{ upload_form.collection.name }}', $("#{{ upload_form.collection.auto_id }}").val());
+	control.swfupload('addPostParam', '{{ upload_form.storage.name }}', $("#{{ upload_form.storage.auto_id }}").val());
+	control.swfupload('addPostParam', '{{ upload_form.create_records.name }}', $("#{{ upload_form.create_records.auto_id }}").attr("checked") ? "on" : "");
+	control.swfupload('addPostParam', '{{ upload_form.personal_records.name }}', $("#{{ upload_form.personal_records.auto_id }}").attr("checked") ? "on" : "");
+	control.swfupload('addPostParam', '{{ upload_form.replace_files.name }}', $("#{{ upload_form.replace_files.auto_id }}").attr("checked") ? "on" : "");
+	control.swfupload('addPostParam', '{{ upload_form.multiple_files.name }}', $("#{{ upload_form.multiple_files.auto_id }}").attr("checked") ? "on" : "");
+
+	var limit = $("#{{ upload_form.storage.auto_id }}").val().split(',')[1];
+	control.swfupload('setFileSizeLimit', limit);
+}
+
+</script>
+
+{% include "personal_upload_js.html" %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Import Personal Files</h2>
+
+    <div>
+        <h3>The basics</h3>
+            <p>
+
+                Any media file uploaded from this page will automatically have a record created for it.
+                By default, the record and media file are visible only to you.
+                There are several ways to make them visible to other users:
+            <dl>
+                <dt>
+                    Add to a presentation
+                </dt>
+                <dd>
+                    The presentation must be visible
+                </dd>
+                <dt>
+                    Add to a collection
+                </dt>
+                <dd>
+                    On the edit record page you can choose to share the record and media
+                    with any collection that you have permission to share with.  Items shared
+                    with a collection are available to anyone who can see the collection.
+                </dd>
+            </dl>
+            </p>
+
+        <h3>Advanced features</h3>
+
+        <dl>
+            <dt>
+                Add to a presentation
+            </dt>
+            <dd>
+                The presentation must be visible
+            </dd>
+            <dt>
+                Upload multiple media files for one record
+            </dt>
+            <dd>
+                You can attach more than one file of the same type to a record
+                by adding a suffix to the name, e.g. ABC001_01.jpg, ABC001_02.jpg
+                will create one record ("ABC001") with two media files.
+            </dd>
+        </dl>
+
+
+    </div>
+    <form method="post" action="{{ request.get_full_path }}" enctype="multipart/form-data" id="upload-control">
+
+{#    <div style="display: none">#}
+        <div style="visibility: hidden">
+        {{ upload_form.collection.label }}
+        {{ upload_form.collection }}
+        {{ upload_form.storage.label }}
+        {{ upload_form.storage }}
+
+        {{ upload_form.create_records.label }}
+        {{ upload_form.create_records }}
+
+        {{ upload_form.personal_records.label }}
+        {{ upload_form.personal_records }}
+
+        {{ upload_form.replace_files.label }}
+        {{ upload_form.replace_files }}
+
+        {{ upload_form.multiple_files.label }}
+        {{ upload_form.multiple_files }}
+    </div>
+
+
+{#<table style="visibility: hidden">#}
+{#<table style="display: none">#}
+{#	<tr>#}
+{#		<th>{{ upload_form.collection.label }}#}
+{#		</th>#}
+{#		<td>{{ upload_form.collection }}<br />#}
+{#	* You may add regular records to this collection#}
+{#		</td>#}
+{#	</tr>#}
+{#	<tr>#}
+{#		<th>{{ upload_form.storage.label }}#}
+{#		</th>#}
+{#		<td>{{ upload_form.storage }}#}
+{#		</td>#}
+{#	</tr>#}
+{#	<tr>#}
+{#		<th>{{ upload_form.create_records.label }}#}
+{#		</th>#}
+{#		<td>{{ upload_form.create_records }}#}
+{#		</td>#}
+{#	</tr>#}
+{#	<tr>#}
+{#		<th>{{ upload_form.personal_records.label }}#}
+{#		</th>#}
+{#		<td>{{ upload_form.personal_records }}#}
+{#		</td>#}
+{#	</tr>#}
+{#	<tr>#}
+{#		<th>{{ upload_form.replace_files.label }}#}
+{#		</th>#}
+{#		<td>{{ upload_form.replace_files }}#}
+{#		</td>#}
+{#	</tr>#}
+{#	<tr>#}
+{#		<th>{{ upload_form.multiple_files.label }}#}
+{#		</th>#}
+{#		<td>{{ upload_form.multiple_files }}<br />#}
+{#			Allows attaching more than one file of the same type to a record#}
+{#			by adding a suffix to the name, e.g. ABC001_01.jpg, ABC001_02.jpg, ...#}
+{#		</td>#}
+{#	</tr>#}
+{#</table>#}
+<span id="html-upload-control">{{ upload_form.file.label }} {{ upload_form.file }}<br /></span>
+<input type="submit" value="Upload Media" id="upload-button" />
+</form>
+
+<div id="upload-queue"></div>
+
+{% if debug %}
+<ol id="log" style="display: none; clear: both; border: thin solid lightgrey; overflow: auto; max-height: 200px; margin-top: 20px;"></ol>
+{% endif %}
+
+{% endblock %}

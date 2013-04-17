@@ -37,6 +37,11 @@ function update_form_parameters(control) {
 
 <h2>Import Personal Files</h2>
 
+
+    <span id="html-upload-control">{{ upload_form.file.label }} {{ upload_form.file }}<br/></span>
+    <input type="submit" value="Upload Media" id="upload-button"/>
+    <div id="upload-queue"></div>
+    
     <div>
         <h3>The basics</h3>
             <p>
@@ -143,11 +148,10 @@ function update_form_parameters(control) {
 {#		</td>#}
 {#	</tr>#}
 {#</table>#}
-<span id="html-upload-control">{{ upload_form.file.label }} {{ upload_form.file }}<br /></span>
-<input type="submit" value="Upload Media" id="upload-button" />
+
 </form>
 
-<div id="upload-queue"></div>
+
 
 {% if debug %}
 <ol id="log" style="display: none; clear: both; border: thin solid lightgrey; overflow: auto; max-height: 200px; margin-top: 20px;"></ol>
